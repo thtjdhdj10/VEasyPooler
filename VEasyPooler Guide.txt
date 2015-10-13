@@ -1,0 +1,85 @@
+VEasyPooler 구조 설명
+
+
+
+Prefab 에 있는 오브젝트만을 관리할 수 있다.
+
+새로운 Prefab 에 대한 관리를 요청하면, VEasyPooler 컴포넌트를 가진 GameObject를 생성하고,
+
+이 GameObjec(Pooler)가 그 오브젝트들을 관리하게 된다.
+
+각 Pooler 는 첫 관리 요청 시점에 Prefab 에 대한 ModelObject를 만든다.
+
+이후 부족한 오브젝트는 ModelObject를 Instantiate 하여 생성된다.
+
+
+
+
+PoolerManager 컴포넌트는 각 Pooler들을 static Dictionary로 관리한다.
+
+key 값으로 오브젝트의 이름(string)을 사용.
+
+
+
+
+PoolerManager 는 Pooler 에 대한 여러가지 옵션의 설정값들을 멤버로 가지고 있는데,
+
+컴포넌트 이기 때문에 여럿이 존재할 수 있다.
+
+이에 대한 대책으로 static 으로 존재하는 PoolerManager 를 하나 선언했다(public static VEasyPoolerManager manager).
+
+이는 여러 PoolerManager 중 하나를 가르켜 어떤 컴포넌트의 값을 사용할 지 지정하는 역할을 한다.
+
+일단은 PoolerManager 가 생성될 때(Awake), 그것을 manager 로 설정하게 했다.
+
+
+
+
+VEasyPooler 는 오브젝트를 Generic List 로 관리한다.
+
+현재 사용중인(active) 오브젝트와 사용중이지 않은(inactive) 오브젝트를 하나의 List 로 관리한다.
+
+List는 앞부분에 inactive, 뒷부분에 active 한 오브젝트가 놓인 상태를 유지하도록 한다.
+□□□□□□□■■■ : 7 개 사용 가능, 3 개 사용 중
+
+■ : 사용중
+□ : 안 사용중
+
+
+
+
+- 오브젝트 가져오기를 요청하면( GetObjectRequest ),
+
+사용가능한(inactive) 오브젝트 중 List 의 뒷편에 있는 것부터 가져온다.
+
+당연히 가져온 오브젝트들은 active 상태가 되기 때문에 규칙에 어긋나지 않는다.
+
+
+
+
+이 때 사용가능한 오브젝트가 부족하다면 자동으로 새로운 오브젝트를 생성을 요청한다.
+
+요청의 종류(get active? inactive? 선택 가능)에 따라 호출되는 함수가 다르다.
+
+
+
+
+- 바로 사용하지 않는 오브젝트 생성 요청( CreateInactiveObjectRequset) 시
+
+inactive 오브젝트와 active 오브젝트 사이에 inactive 오브젝트들을 추가하고 이를 리턴한다.
+
+- 바로 사용하는 경우( CreateActiveObjectRequset )
+
+List 의 끝에서 부터 추가하고 이를 리턴한다.
+
+
+
+
+- List 에 있는 오브젝트를 Release 할 때는
+
+사용중인(active) 오브젝트 중 List 의 가장 앞편에 있는 것과
+
+release 할 오브젝트의 위치를 맞바꾸는 것으로 규칙성을 유지한다.
+□□□□■■■■■■ 8 번째를 release 하는 경우
+□□□□■■■□■■ active 를 false 로 하고,
+□□□□□■■■■■ 4 번째와 맞바꿈

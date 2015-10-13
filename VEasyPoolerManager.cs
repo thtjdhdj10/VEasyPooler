@@ -9,8 +9,9 @@ public class VEasyPoolerManager : MonoBehaviour
     public bool useDebugFlow = true;
     public bool getOnResetTransform = true;
 
-    // use this, than can changing object`s name and parents
-    public bool visualizeObjectList = true;
+    // use this, than can changing object`s parents
+    // please NOT change whan runtime
+    public bool visualizeObjectList = false;
 
     [System.Serializable]
     private struct NameCount
@@ -52,7 +53,7 @@ public class VEasyPoolerManager : MonoBehaviour
 
         for (int i = 0; i < prePoolingList.Count; ++i)
         {
-            CreateUsableObjectRequest(prePoolingList[i].name, prePoolingList[i].count);
+            CreateInactiveObjectRequset(prePoolingList[i].name, prePoolingList[i].count);
         }
 
     }
@@ -115,17 +116,17 @@ public class VEasyPoolerManager : MonoBehaviour
 
     // create
 
-    public static void CreateUsableObjectRequest(string name)
+    public static void CreateInactiveObjectRequset(string name)
     {
-        CreateUsableObjectRequest(name, 1);
+        CreateInactiveObjectRequset(name, 1);
     }
 
-    public static void CreateUsableObjectRequest(string name, int count)
+    public static void CreateInactiveObjectRequset(string name, int count)
     {
         if (IsValidArgs(name, count) == false)
             return;
 
-        poolDic[name].CreateUsableObjectRequest(count);
+        poolDic[name].CreateInactiveObjectRequset(count);
     }
 
     // get

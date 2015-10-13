@@ -14,6 +14,8 @@ public class VEasyPooler : MonoBehaviour
     public int inActiveCount = 0;
     public int activeCount = 0;
 
+    private int objectNumber = 0;
+
     public List<GameObject> objectList = new List<GameObject>();
     // lists front are inactive objects, backward are active objects
 
@@ -75,12 +77,9 @@ public class VEasyPooler : MonoBehaviour
         modelState.indexOfPool = -1;
         modelState.IsUse = false;
         modelState.OriginalName = originName;
-        
-        if(VEasyPoolerManager.manager.visualizeObjectList == true)
-        {
-            modelObject.name = originName + "(Origin)";
-            modelObject.transform.parent = gameObject.transform;
-        }
+
+        modelObject.name = originName + "(Origin)";
+        modelObject.transform.parent = gameObject.transform;
     }
 
     // add
@@ -101,11 +100,9 @@ public class VEasyPooler : MonoBehaviour
                 state.OriginalName = originName;
             }
 
+            list[i].name = originName + "_" + objectNumber++;
             if (VEasyPoolerManager.manager.visualizeObjectList == true)
-            {
-                list[i].name = originName + "_" + (inActiveCount + i);
                 list[i].transform.parent = gameObject.transform;
-            }
         }
 
         activeCount += list.Count;
@@ -115,13 +112,13 @@ public class VEasyPooler : MonoBehaviour
 
     // create
 
-    public void CreateUsableObjectRequest(int count)
+    public void CreateInactiveObjectRequset(int count)
     {
         ExactlyLog("create inActive " + originName + " * " + count);
 
         for (int i = inActiveCount; i < inActiveCount + activeCount; ++i)
         {
-            objectList[i].name = originName + "_" + (i + count);
+            objectList[i].name = originName + "_" + objectNumber++;
 
             ObjectState state = objectList[i].GetComponent<ObjectState>();
             state.indexOfPool = i + count;
@@ -146,11 +143,9 @@ public class VEasyPooler : MonoBehaviour
             state.indexOfPool = inActiveCount + i;
             state.OriginalName = originName;
 
+            obj.name = originName + "_" + objectNumber++;
             if (VEasyPoolerManager.manager.visualizeObjectList == true)
-            {
-                obj.name = originName + "_" + (inActiveCount + i);
                 obj.transform.parent = gameObject.transform;
-            }
 
             newObjects.Add(obj);
         }
@@ -160,7 +155,7 @@ public class VEasyPooler : MonoBehaviour
         inActiveCount += count;
     }
 
-    public List<GameObject> CreateUnusableObjectRequest(int count, bool active)
+    public List<GameObject> CreateActiveObjectRequset(int count, bool active)
     {
         ExactlyLog("create active " + originName + " * " + count);
 
@@ -181,11 +176,9 @@ public class VEasyPooler : MonoBehaviour
             state.indexOfPool = objectList.Count;
             state.OriginalName = originName;
 
+            obj.name = originName + "_" + objectNumber++;
             if (VEasyPoolerManager.manager.visualizeObjectList == true)
-            {
-                obj.name = originName + "_" + objectList.Count;
                 obj.transform.parent = gameObject.transform;
-            }
 
             objectList.Add(obj);
         }
@@ -205,7 +198,7 @@ public class VEasyPooler : MonoBehaviour
         
         if (needCount > 0)
         {
-            List<GameObject> retObjects = CreateUnusableObjectRequest(needCount, active);
+            List<GameObject> retObjects = CreateActiveObjectRequset(needCount, active);
             if (retObjects == null) return null;
 
             int countMinusNeed = count - needCount;
@@ -324,13 +317,6 @@ public class VEasyPooler : MonoBehaviour
             }
 
             ObjectState changeObjState = objectList[changeIdx].GetComponent<ObjectState>();
-
-            if (VEasyPoolerManager.manager.visualizeObjectList == true)
-            {
-                string tempStr = objectList[relIdx].name;
-                objectList[relIdx].name = objectList[changeIdx].name;
-                objectList[changeIdx].name = tempStr;
-            }
 
             GameObject tempObj = objectList[relIdx];
             objectList[relIdx] = objectList[changeIdx];
