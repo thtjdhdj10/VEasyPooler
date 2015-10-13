@@ -19,6 +19,17 @@ public class ObjectPool : MonoBehaviour
 
     GameObject modelObject = null;
 
+    void ExactlyLog(string str)
+    {
+        if (ObjectPoolManager.manager.useDebugFlow == false)
+            return;
+
+        if (ObjectPoolManager.IsExclude(originName, originTag) == true)
+            return;
+
+        Debug.Log(str);
+    }
+
     public void SetModelObject(string name)
     {
         if (modelObject != null) return;
@@ -45,8 +56,7 @@ public class ObjectPool : MonoBehaviour
             return;
         }
 
-        if (ObjectPoolManager.IsExclude(originName, originTag) == false)
-            Debug.Log("new pool for " + originName);
+        ExactlyLog("new pool for " + originName);
 
         modelObject = MonoBehaviour.Instantiate(prefab) as GameObject;
 
@@ -75,8 +85,7 @@ public class ObjectPool : MonoBehaviour
 
     public void AddObjectFromHierarchyRequest(List<GameObject> list)
     {
-        if(ObjectPoolManager.IsExclude(originName,originTag) == false)
-            Debug.Log("add " + originName + " * " + list.Count);
+        ExactlyLog("add " + originName + " * " + list.Count);
 
         for(int i = 0; i < list.Count; ++i)
         {
@@ -104,8 +113,7 @@ public class ObjectPool : MonoBehaviour
 
     public void CreateUsableObjectRequest(int count)
     {
-        if (ObjectPoolManager.IsExclude(originName,originTag) == false)
-            Debug.Log("create inActive " + originName + " * " + count);
+        ExactlyLog("create inActive " + originName + " * " + count);
 
         for (int i = inActiveCount; i < inActiveCount + activeCount; ++i)
         {
@@ -147,8 +155,7 @@ public class ObjectPool : MonoBehaviour
 
     public List<GameObject> CreateUnusableObjectRequest(int count, bool active)
     {
-        if (ObjectPoolManager.IsExclude(originName, originTag) == false)
-            Debug.Log("create active " + originName + " * " + count);
+        ExactlyLog("create active " + originName + " * " + count);
 
         for (int i = 0; i < count; ++i)
         {
@@ -182,8 +189,7 @@ public class ObjectPool : MonoBehaviour
 
     public List<GameObject> GetObjectRequest(int count, bool active)
     {
-        if (ObjectPoolManager.IsExclude(originName,originTag) == false)
-            Debug.Log("get " + originName + " * " + count);
+        ExactlyLog("get " + originName + " * " + count);
 
         int needCount = count - inActiveCount;
         
@@ -259,8 +265,7 @@ public class ObjectPool : MonoBehaviour
 
     public void ReleaseObjectRequest(GameObject obj)
     {
-        if (ObjectPoolManager.IsExclude(originName,originTag) == false)
-            Debug.Log("release " + obj.name);
+        ExactlyLog("release " + obj.name);
 
         List<GameObject> list = new List<GameObject>(1);
         list.Add(obj);
@@ -269,8 +274,7 @@ public class ObjectPool : MonoBehaviour
 
     public void ReleaseObjectRequest(List<GameObject> obj)
     {
-        if (ObjectPoolManager.IsExclude(originName,originTag) == false && obj.Count != 1)
-            Debug.Log("release " + originName + " * " + obj.Count);
+        ExactlyLog("release " + originName + " * " + obj.Count);
 
         for (int i = 0; i < obj.Count; ++i)
         {

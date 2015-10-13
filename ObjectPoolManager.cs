@@ -6,6 +6,8 @@ using System.Collections.Generic;
 
 public class ObjectPoolManager : MonoBehaviour
 {
+    public bool useDebugFlow = true;
+
     [System.Serializable]
     private struct NameCount
     {
