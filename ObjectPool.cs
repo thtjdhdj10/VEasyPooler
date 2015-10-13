@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Diagnostics;
 using System.Collections.Generic;
@@ -10,11 +11,11 @@ public class ObjectPool : MonoBehaviour
     public string originName;
     public string originTag;
 
-    public int unActiveCount = 0;
+    public int inActiveCount = 0;
     public int activeCount = 0;
 
     public List<GameObject> objectList = new List<GameObject>();
-    // lists front are usable objects, backward are unusable objects
+    // lists front are inactive objects, backward are active objects
 
     GameObject modelObject = null;
 
@@ -29,13 +30,9 @@ public class ObjectPool : MonoBehaviour
         for (int i = 0; i < ObjectPoolManager.manager.includePrefabPath.Count; ++i)
         {
             if (ObjectPoolManager.manager.includePrefabPath[i] != "")
-            {
                 prefab = Resources.Load(ObjectPoolManager.manager.includePrefabPath[i] + "/" + originName, typeof(GameObject));
-            }
             else
-            {
                 prefab = Resources.Load(originName, typeof(GameObject));
-            }
 
             if (prefab != null)
                 break;
@@ -78,12 +75,12 @@ public class ObjectPool : MonoBehaviour
 
     public void AddObjectFromHierarchyRequest(List<GameObject> list)
     {
-        if (ObjectPoolManager.IsExclude(originName, originTag) == false)
+        if(ObjectPoolManager.IsExclude(originName,originTag) == false)
             Debug.Log("add " + originName + " * " + list.Count);
 
-        for (int i = 0; i < list.Count; ++i)
+        for(int i = 0; i < list.Count; ++i)
         {
-            list[i].name = originName + "_" + (unActiveCount + i);
+            list[i].name = originName + "_" + (inActiveCount + i);
 
             ObjectState state = list[i].GetComponent<ObjectState>();
             if (state == null)
@@ -91,7 +88,7 @@ public class ObjectPool : MonoBehaviour
                 state = list[i].AddComponent<ObjectState>();
                 state.IsFinite = false;
                 state.IsUse = true;
-                state.indexOfPool = unActiveCount + i;
+                state.indexOfPool = inActiveCount + i;
                 state.OriginalName = originName;
             }
 
@@ -107,10 +104,10 @@ public class ObjectPool : MonoBehaviour
 
     public void CreateUsableObjectRequest(int count)
     {
-        if (ObjectPoolManager.IsExclude(originName, originTag) == false)
-            Debug.Log("create unActive " + originName + " * " + count);
+        if (ObjectPoolManager.IsExclude(originName,originTag) == false)
+            Debug.Log("create inActive " + originName + " * " + count);
 
-        for (int i = unActiveCount; i < unActiveCount + activeCount; ++i)
+        for (int i = inActiveCount; i < inActiveCount + activeCount; ++i)
         {
             objectList[i].name = originName + "_" + (i + count);
 
@@ -119,23 +116,23 @@ public class ObjectPool : MonoBehaviour
         }
 
         List<GameObject> newObjects = new List<GameObject>(count);
-
-        for (int i = 0; i < count; ++i)
+        
+        for(int i = 0; i < count; ++i)
         {
             GameObject obj = MonoBehaviour.Instantiate(modelObject) as GameObject;
 
-            if (obj == null)
+            if(obj == null)
             {
                 Debug.LogError("GameObject instantiate fail");
                 return;
             }
 
-            obj.name = originName + "_" + (unActiveCount + i);
+            obj.name = originName + "_" + (inActiveCount + i);
 
             ObjectState state = obj.GetComponent<ObjectState>();
             state.IsFinite = false;
             state.IsUse = false;
-            state.indexOfPool = unActiveCount + i;
+            state.indexOfPool = inActiveCount + i;
             state.OriginalName = originName;
 
             obj.transform.parent = gameObject.transform;
@@ -143,9 +140,9 @@ public class ObjectPool : MonoBehaviour
             newObjects.Add(obj);
         }
 
-        objectList.InsertRange(unActiveCount, newObjects);
+        objectList.InsertRange(inActiveCount, newObjects);
 
-        unActiveCount += count;
+        inActiveCount += count;
     }
 
     public List<GameObject> CreateUnusableObjectRequest(int count, bool active)
@@ -185,11 +182,11 @@ public class ObjectPool : MonoBehaviour
 
     public List<GameObject> GetObjectRequest(int count, bool active)
     {
-        if (ObjectPoolManager.IsExclude(originName, originTag) == false)
+        if (ObjectPoolManager.IsExclude(originName,originTag) == false)
             Debug.Log("get " + originName + " * " + count);
 
-        int needCount = count - unActiveCount;
-
+        int needCount = count - inActiveCount;
+        
         if (needCount > 0)
         {
             List<GameObject> retObjects = CreateUnusableObjectRequest(needCount, active);
@@ -199,7 +196,7 @@ public class ObjectPool : MonoBehaviour
 
             if (countMinusNeed > 0)
             {
-                int startIdx = unActiveCount - countMinusNeed;
+                int startIdx = inActiveCount - countMinusNeed;
 
                 List<GameObject> addList = GetObjectList(startIdx, countMinusNeed, active);
 
@@ -210,7 +207,7 @@ public class ObjectPool : MonoBehaviour
         }
         else
         {
-            int getIndex = unActiveCount - count;
+            int getIndex = inActiveCount - count;
 
             return GetObjectList(getIndex, count, active);
         }
@@ -218,7 +215,7 @@ public class ObjectPool : MonoBehaviour
 
     private List<GameObject> GetObjectList(int startIdx, int count, bool active)
     {
-        unActiveCount -= count;
+        inActiveCount -= count;
         activeCount += count;
 
         for (int i = startIdx; i < startIdx + count; ++i)
@@ -239,7 +236,7 @@ public class ObjectPool : MonoBehaviour
     {
         if (active == true)
             return activeCount;
-        else return unActiveCount;
+        else return inActiveCount;
     }
 
     // get finite
@@ -248,7 +245,7 @@ public class ObjectPool : MonoBehaviour
     {
         List<GameObject> list = GetObjectRequest(count, active);
 
-        for (int i = 0; i < count; ++i)
+        for(int i = 0; i < count; ++i)
         {
             ObjectState state = list[i].GetComponent<ObjectState>();
             state.IsFinite = true;
@@ -262,7 +259,7 @@ public class ObjectPool : MonoBehaviour
 
     public void ReleaseObjectRequest(GameObject obj)
     {
-        if (ObjectPoolManager.IsExclude(originName, originTag) == false)
+        if (ObjectPoolManager.IsExclude(originName,originTag) == false)
             Debug.Log("release " + obj.name);
 
         List<GameObject> list = new List<GameObject>(1);
@@ -272,7 +269,7 @@ public class ObjectPool : MonoBehaviour
 
     public void ReleaseObjectRequest(List<GameObject> obj)
     {
-        if (ObjectPoolManager.IsExclude(originName, originTag) == false && obj.Count != 1)
+        if (ObjectPoolManager.IsExclude(originName,originTag) == false && obj.Count != 1)
             Debug.Log("release " + originName + " * " + obj.Count);
 
         for (int i = 0; i < obj.Count; ++i)
@@ -290,7 +287,7 @@ public class ObjectPool : MonoBehaviour
             releaseObjState.IsUse = false;
 
             int relIdx = releaseObjState.indexOfPool;
-            if (relIdx < unActiveCount || relIdx >= objectList.Count)
+            if(relIdx < inActiveCount || relIdx >= objectList.Count)
             {
                 Debug.LogWarning("release request fail");
                 Debug.LogWarning("\"" + obj[i].name + "\" this object already released");
@@ -298,10 +295,10 @@ public class ObjectPool : MonoBehaviour
                 return;
             }
 
-            int changeIdx = unActiveCount;
+            int changeIdx = inActiveCount;
             if (changeIdx == relIdx)
             {
-                unActiveCount += 1;
+                inActiveCount += 1;
                 activeCount -= 1;
                 continue;
             }
@@ -320,7 +317,7 @@ public class ObjectPool : MonoBehaviour
             releaseObjState.indexOfPool = changeObjState.indexOfPool;
             changeObjState.indexOfPool = tempInt;
 
-            unActiveCount += 1;
+            inActiveCount += 1;
             activeCount -= 1;
         }
     }

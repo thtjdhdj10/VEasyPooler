@@ -1,4 +1,5 @@
 ﻿using UnityEngine;
+using UnityEditor;
 using System.Collections;
 using System.Collections.Generic;
 
@@ -23,9 +24,16 @@ public class ObjectPoolManager : MonoBehaviour
 
     public static ObjectPoolManager manager;
 
+
+    public enum TargetObject
+    {
+        ACTIVE_ONLY = 0,
+        INACTIVE_ONLY,
+        ALL_OBJECT,
+    }
+
     void Awake()
     {
-        poolDic = new Dictionary<string, ObjectPool>();
 
         manager = this;
 
@@ -41,6 +49,34 @@ public class ObjectPoolManager : MonoBehaviour
             CreateUsableObjectRequest(prePoolingList[i].name, prePoolingList[i].count);
         }
 
+    }
+
+    public delegate void ProcessingFunction(GameObject obj);
+
+    public static void ProcessFunctionToObjects(ProcessingFunction func, string name, TargetObject to)
+    {
+        if (IsValidArgs(name) == false)
+            return;
+
+        List<GameObject> list = poolDic[name].objectList;
+
+        int count = 0;
+        int startIndex = 0;
+
+        if (to == TargetObject.ACTIVE_ONLY)
+        {
+            count = poolDic[name].activeCount;
+            startIndex = poolDic[name].inActiveCount;
+        }
+        else if (to == TargetObject.INACTIVE_ONLY)
+            count = poolDic[name].inActiveCount;
+        else
+            count = poolDic[name].activeCount + poolDic[name].inActiveCount;
+
+        for (int i = startIndex; i < startIndex + count; ++i)
+        {
+            func(list[i]);
+        }
     }
 
     // add
