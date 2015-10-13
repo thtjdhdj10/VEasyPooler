@@ -4,7 +4,7 @@ using System.Collections;
 using System.Collections.Generic;
 
 
-public class ObjectPoolManager : MonoBehaviour
+public class VEasyPoolerManager : MonoBehaviour
 {
     public bool useDebugFlow = true;
     public bool getOnResetTransform = true;
@@ -26,16 +26,16 @@ public class ObjectPoolManager : MonoBehaviour
     public List<string> excludeLogNames = new List<string>();
     public List<string> includePrefabPath = new List<string>();
 
-    static Dictionary<string, ObjectPool> poolDic = new Dictionary<string, ObjectPool>();
+    static Dictionary<string, VEasyPooler> poolDic = new Dictionary<string, VEasyPooler>();
 
-    public static ObjectPoolManager manager;
+    public static VEasyPoolerManager manager;
 
 
     public enum TargetObject
     {
         ACTIVE_ONLY = 0,
         INACTIVE_ONLY,
-        ALL_OBJECT,
+        BOTH_OBJECT,
     }
 
     void Awake()
@@ -321,7 +321,7 @@ public class ObjectPoolManager : MonoBehaviour
             GameObject poolObj = new GameObject();
             poolObj.name = "pool " + name;
 
-            ObjectPool poolScript = poolObj.AddComponent<ObjectPool>();
+            VEasyPooler poolScript = poolObj.AddComponent<VEasyPooler>();
             poolDic.Add(name, poolScript);
 
             poolDic[name].SetModelObject(name);

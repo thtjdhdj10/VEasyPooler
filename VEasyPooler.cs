@@ -6,7 +6,7 @@ using System.Collections.Generic;
 
 using Debug = UnityEngine.Debug;
 
-public class ObjectPool : MonoBehaviour
+public class VEasyPooler : MonoBehaviour
 {
     public string originName;
     public string originTag;
@@ -21,10 +21,10 @@ public class ObjectPool : MonoBehaviour
 
     void ExactlyLog(string str)
     {
-        if (ObjectPoolManager.manager.useDebugFlow == false)
+        if (VEasyPoolerManager.manager.useDebugFlow == false)
             return;
 
-        if (ObjectPoolManager.IsExclude(originName, originTag) == true)
+        if (VEasyPoolerManager.IsExclude(originName, originTag) == true)
             return;
 
         Debug.Log(str);
@@ -38,10 +38,10 @@ public class ObjectPool : MonoBehaviour
 
         Object prefab = null;
 
-        for (int i = 0; i < ObjectPoolManager.manager.includePrefabPath.Count; ++i)
+        for (int i = 0; i < VEasyPoolerManager.manager.includePrefabPath.Count; ++i)
         {
-            if (ObjectPoolManager.manager.includePrefabPath[i] != "")
-                prefab = Resources.Load(ObjectPoolManager.manager.includePrefabPath[i] + "/" + originName, typeof(GameObject));
+            if (VEasyPoolerManager.manager.includePrefabPath[i] != "")
+                prefab = Resources.Load(VEasyPoolerManager.manager.includePrefabPath[i] + "/" + originName, typeof(GameObject));
             else
                 prefab = Resources.Load(originName, typeof(GameObject));
 
@@ -76,7 +76,7 @@ public class ObjectPool : MonoBehaviour
         modelState.IsUse = false;
         modelState.OriginalName = originName;
         
-        if(ObjectPoolManager.manager.visualizeObjectList == true)
+        if(VEasyPoolerManager.manager.visualizeObjectList == true)
         {
             modelObject.name = originName + "(Origin)";
             modelObject.transform.parent = gameObject.transform;
@@ -101,7 +101,7 @@ public class ObjectPool : MonoBehaviour
                 state.OriginalName = originName;
             }
 
-            if (ObjectPoolManager.manager.visualizeObjectList == true)
+            if (VEasyPoolerManager.manager.visualizeObjectList == true)
             {
                 list[i].name = originName + "_" + (inActiveCount + i);
                 list[i].transform.parent = gameObject.transform;
@@ -146,7 +146,7 @@ public class ObjectPool : MonoBehaviour
             state.indexOfPool = inActiveCount + i;
             state.OriginalName = originName;
 
-            if (ObjectPoolManager.manager.visualizeObjectList == true)
+            if (VEasyPoolerManager.manager.visualizeObjectList == true)
             {
                 obj.name = originName + "_" + (inActiveCount + i);
                 obj.transform.parent = gameObject.transform;
@@ -181,7 +181,7 @@ public class ObjectPool : MonoBehaviour
             state.indexOfPool = objectList.Count;
             state.OriginalName = originName;
 
-            if (ObjectPoolManager.manager.visualizeObjectList == true)
+            if (VEasyPoolerManager.manager.visualizeObjectList == true)
             {
                 obj.name = originName + "_" + objectList.Count;
                 obj.transform.parent = gameObject.transform;
@@ -241,7 +241,7 @@ public class ObjectPool : MonoBehaviour
             state.IsUse = active;
         }
 
-        if(ObjectPoolManager.manager.getOnResetTransform == true)
+        if(VEasyPoolerManager.manager.getOnResetTransform == true)
         {
             for (int i = startIdx; i < startIdx + count; ++i)
             {
@@ -325,7 +325,7 @@ public class ObjectPool : MonoBehaviour
 
             ObjectState changeObjState = objectList[changeIdx].GetComponent<ObjectState>();
 
-            if (ObjectPoolManager.manager.visualizeObjectList == true)
+            if (VEasyPoolerManager.manager.visualizeObjectList == true)
             {
                 string tempStr = objectList[relIdx].name;
                 objectList[relIdx].name = objectList[changeIdx].name;
