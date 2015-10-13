@@ -31,7 +31,7 @@ public static VEasyPoolerManager manager
 일단은 PoolerManager 가 생성될 때(Awake), 그것을 manager 로 설정하게 했다.
 
 
-- 관리 규칙 -
+- VEasyPooler 관리규칙 -
 
 
 VEasyPooler 는 오브젝트를 Generic List 로 관리한다.
