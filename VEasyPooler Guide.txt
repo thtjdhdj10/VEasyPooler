@@ -1,13 +1,13 @@
-VEasyPooler 구조 설명
+- VEasyPooler 구조 -
 
 
 Prefab 에 있는 오브젝트만을 관리할 수 있다.
 
 새로운 Prefab 에 대한 관리를 요청하면, VEasyPooler 컴포넌트를 가진 GameObject를 생성하고,
 
-이 GameObjec(Pooler)가 그 오브젝트들을 관리하게 된다.
+이 GameObject(Pooler)가 그 Prefab오브젝트들을 관리하게 된다.
 
-각 Pooler 는 첫 관리 요청 시점에 Prefab 에 대한 ModelObject를 만든다.
+각 Pooler는 첫 관리 요청 시점에 Prefab에 대한 ModelObject를 만든다.
 
 이후 부족한 오브젝트는 ModelObject를 Instantiate 하여 생성된다.
 
@@ -23,12 +23,15 @@ PoolerManager 는 Pooler 에 대한 여러가지 옵션의 설정값들을 멤�
 
 컴포넌트 이기 때문에 여럿이 존재할 수 있다.
 
-이에 대한 대책으로 static 으로 존재하는 PoolerManager 를 하나 선언했다(public static VEasyPoolerManager manager).
+이에 대한 대책으로 static 으로 존재하는 PoolerManager 를 하나 선언했다.
+public static VEasyPoolerManager manager
 
 이는 여러 PoolerManager 중 하나를 가르켜 어떤 컴포넌트의 값을 사용할 지 지정하는 역할을 한다.
 
 일단은 PoolerManager 가 생성될 때(Awake), 그것을 manager 로 설정하게 했다.
 
+
+- 관리 규칙 -
 
 
 VEasyPooler 는 오브젝트를 Generic List 로 관리한다.
