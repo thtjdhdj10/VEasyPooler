@@ -69,16 +69,18 @@ public class ObjectPool : MonoBehaviour
 
         originTag = modelObject.tag;
 
-        modelObject.name = originName + "(Origin)";
-
         ObjectState modelState = modelObject.AddComponent<ObjectState>();
 
         modelState.IsFinite = false;
         modelState.indexOfPool = -1;
         modelState.IsUse = false;
         modelState.OriginalName = originName;
-
-        modelObject.transform.parent = gameObject.transform;
+        
+        if(ObjectPoolManager.manager.visualizeObjectList == true)
+        {
+            modelObject.name = originName + "(Origin)";
+            modelObject.transform.parent = gameObject.transform;
+        }
     }
 
     // add
@@ -89,8 +91,6 @@ public class ObjectPool : MonoBehaviour
 
         for(int i = 0; i < list.Count; ++i)
         {
-            list[i].name = originName + "_" + (inActiveCount + i);
-
             ObjectState state = list[i].GetComponent<ObjectState>();
             if (state == null)
             {
@@ -101,7 +101,11 @@ public class ObjectPool : MonoBehaviour
                 state.OriginalName = originName;
             }
 
-            list[i].transform.parent = gameObject.transform;
+            if (ObjectPoolManager.manager.visualizeObjectList == true)
+            {
+                list[i].name = originName + "_" + (inActiveCount + i);
+                list[i].transform.parent = gameObject.transform;
+            }
         }
 
         activeCount += list.Count;
@@ -135,7 +139,6 @@ public class ObjectPool : MonoBehaviour
                 return;
             }
 
-            obj.name = originName + "_" + (inActiveCount + i);
 
             ObjectState state = obj.GetComponent<ObjectState>();
             state.IsFinite = false;
@@ -143,7 +146,11 @@ public class ObjectPool : MonoBehaviour
             state.indexOfPool = inActiveCount + i;
             state.OriginalName = originName;
 
-            obj.transform.parent = gameObject.transform;
+            if (ObjectPoolManager.manager.visualizeObjectList == true)
+            {
+                obj.name = originName + "_" + (inActiveCount + i);
+                obj.transform.parent = gameObject.transform;
+            }
 
             newObjects.Add(obj);
         }
@@ -167,7 +174,6 @@ public class ObjectPool : MonoBehaviour
                 return null;
             }
 
-            obj.name = originName + "_" + objectList.Count;
 
             ObjectState state = obj.GetComponent<ObjectState>();
             state.IsFinite = false;
@@ -175,7 +181,11 @@ public class ObjectPool : MonoBehaviour
             state.indexOfPool = objectList.Count;
             state.OriginalName = originName;
 
-            obj.transform.parent = gameObject.transform;
+            if (ObjectPoolManager.manager.visualizeObjectList == true)
+            {
+                obj.name = originName + "_" + objectList.Count;
+                obj.transform.parent = gameObject.transform;
+            }
 
             objectList.Add(obj);
         }
@@ -226,13 +236,19 @@ public class ObjectPool : MonoBehaviour
 
         for (int i = startIdx; i < startIdx + count; ++i)
         {
-            objectList[i].transform.position = modelObject.transform.position;
-            objectList[i].transform.rotation = modelObject.transform.rotation;
-            objectList[i].transform.localScale = modelObject.transform.localScale;
-
             ObjectState state = objectList[i].GetComponent<ObjectState>();
             state.IsFinite = false;
             state.IsUse = active;
+        }
+
+        if(ObjectPoolManager.manager.getOnResetTransform == true)
+        {
+            for (int i = startIdx; i < startIdx + count; ++i)
+            {
+                objectList[i].transform.position = modelObject.transform.position;
+                objectList[i].transform.rotation = modelObject.transform.rotation;
+                objectList[i].transform.localScale = modelObject.transform.localScale;
+            }
         }
 
         return objectList.GetRange(startIdx, count);
@@ -309,9 +325,12 @@ public class ObjectPool : MonoBehaviour
 
             ObjectState changeObjState = objectList[changeIdx].GetComponent<ObjectState>();
 
-            string tempStr = objectList[relIdx].name;
-            objectList[relIdx].name = objectList[changeIdx].name;
-            objectList[changeIdx].name = tempStr;
+            if (ObjectPoolManager.manager.visualizeObjectList == true)
+            {
+                string tempStr = objectList[relIdx].name;
+                objectList[relIdx].name = objectList[changeIdx].name;
+                objectList[changeIdx].name = tempStr;
+            }
 
             GameObject tempObj = objectList[relIdx];
             objectList[relIdx] = objectList[changeIdx];

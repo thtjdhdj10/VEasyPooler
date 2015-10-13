@@ -7,6 +7,10 @@ using System.Collections.Generic;
 public class ObjectPoolManager : MonoBehaviour
 {
     public bool useDebugFlow = true;
+    public bool getOnResetTransform = true;
+
+    // use this, than can changing object`s name and parents
+    public bool visualizeObjectList = true;
 
     [System.Serializable]
     private struct NameCount

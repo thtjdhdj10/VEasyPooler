@@ -1,8 +1,7 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ObjectState : MonoBehaviour
-{
+public class ObjectState : MonoBehaviour {
 
     [SerializeField]
     private bool isFinite;
@@ -16,7 +15,7 @@ public class ObjectState : MonoBehaviour
         {
             isFinite = value;
             if (value == false)
-                lifeTime = -1.0f;
+                lifeTime = -0.0f;
         }
     }
 
@@ -46,7 +45,7 @@ public class ObjectState : MonoBehaviour
 
     [System.NonSerialized]
     public int indexOfPool;
-
+    
     private string originalName = null;
     public string OriginalName
     {
