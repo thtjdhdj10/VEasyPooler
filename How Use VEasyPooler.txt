@@ -1,75 +1,78 @@
-- ±âº» ±â´É »ç¿ë¹ı -
+- ê¸°ë³¸ ê¸°ëŠ¥ ì‚¬ìš©ë²• -
 
 
-1. ¾Æ¹« ¿ÀºêÁ§Æ®¿¡ VEasyPoolerManager ¸¦ Ãß°¡ÇÑ´Ù
+0. Awake ì—ì„œ í•´ì£¼ëŠ” ì´ˆê¸°í™”ê°€ ëŠ¦ì–´ì„œ ê¼¬ì´ëŠ” ê²½ìš°ê°€ ìˆì„ ìˆ˜ ìˆìŒ.
+Edit->Project Settings->Script Execution Order ì—ì„œ VEasyPoolerManager ìŠ¤í¬ë¦½íŠ¸ë¥¼ ì œì¼ ìœ„ì— ë‘ë©´ ì•ˆì „í•˜ë‹¤.
+
+1. ì•„ë¬´ ì˜¤ë¸Œì íŠ¸ì— VEasyPoolerManager ë¥¼ ì¶”ê°€í•œë‹¤
 
 
-2. Inspector ¿¡¼­ Include Prefab Path ¿¡ Prefab ÀÌ µé¾îÀÖ´Â Æú´õ ÀÌ¸§À» Ãß°¡ÇÑ´Ù
-Resources Æú´õ´Â ÀÚµ¿À¸·Î Ãß°¡µÇ¸ç, Resources ÀÇ ÇÏÀ§ Æú´õ¸¸ Ãß°¡ÇÒ ¼ö ÀÖ´Ù.
+2. Inspector ì—ì„œ Include Prefab Path ì— Prefab ì´ ë“¤ì–´ìˆëŠ” í´ë” ì´ë¦„ì„ ì¶”ê°€í•œë‹¤
+Resources í´ë”ëŠ” ìë™ìœ¼ë¡œ ì¶”ê°€ë˜ë©°, Resources ì˜ í•˜ìœ„ í´ë”ë§Œ ì¶”ê°€í•  ìˆ˜ ìˆë‹¤.
 
 
 3.
 GameObject stone = VEayPoolerManager.GetObjectRequest("Cube");
-ÀÌ·¸°Ô ¾²¸é µÈ´Ù.
+ì´ë ‡ê²Œ ì“°ë©´ ëœë‹¤.
 
-GetObjectRequest ´Â ¿À¹ö·Îµù µÇ¾îÀÖ´Ù.
-¿ÀºêÁ§Æ®ÀÇ °¹¼ö¿Í active ¿©ºÎ¸¦ Ãß°¡·Î ¼±ÅÃÇÒ ¼ö ÀÖ´Ù.
+GetObjectRequest ëŠ” ì˜¤ë²„ë¡œë”© ë˜ì–´ìˆë‹¤.
+ì˜¤ë¸Œì íŠ¸ì˜ ê°¯ìˆ˜ì™€ active ì—¬ë¶€ë¥¼ ì¶”ê°€ë¡œ ì„ íƒí•  ìˆ˜ ìˆë‹¤.
 
 List<GameObject> stones = VEayPoolerManager.GetObjectRequest("Cube", 10, true);
 
 
 4.
 VEayPoolerManager.ReleaseObjectRequest(stones);
-release ÇÒ ¶§´Â ¿ÀºêÁ§Æ®¸¸ ³Ñ°ÜÁÖ¸é µÈ´Ù. ¸®½ºÆ®¿©µµ µÇ°í ¾Æ´Ï¿©µµ µÇ°í
+release í•  ë•ŒëŠ” ì˜¤ë¸Œì íŠ¸ë§Œ ë„˜ê²¨ì£¼ë©´ ëœë‹¤. ë¦¬ìŠ¤íŠ¸ì—¬ë„ ë˜ê³  ì•„ë‹ˆì—¬ë„ ë˜ê³ 
 
 
 5.
 GameObject fire VEayPoolerManager.GetFiniteObjectRequest("Sphere", lifeTime);
 
-finite object request ·Î Æ¯Á¤ÇÑ lifeTime ÀÌ Áö³ª¸é ÀÚµ¿À¸·Î release µÇ´Â ¿ÀºêÁ§Æ®¸¦ °¡Á®¿Ã ¼ö ÀÖ´Ù.
+finite object request ë¡œ íŠ¹ì •í•œ lifeTime ì´ ì§€ë‚˜ë©´ ìë™ìœ¼ë¡œ release ë˜ëŠ” ì˜¤ë¸Œì íŠ¸ë¥¼ ê°€ì ¸ì˜¬ ìˆ˜ ìˆë‹¤.
 
-´ç¿¬È÷ ¿À¹ö·Îµù µÇ¾îÀÖ´Ù.
+ë‹¹ì—°íˆ ì˜¤ë²„ë¡œë”© ë˜ì–´ìˆë‹¤.
 
 List<GameObject> fires VEayPoolerManager.GetFiniteObjectRequest("Sphere", 3, true, lifeTime);
 
 
 
-- Ãß°¡ ±â´É »ç¿ë¹ı -
+- ì¶”ê°€ ê¸°ëŠ¥ ì‚¬ìš©ë²• -
 
 
-1. ¹Ì¸® ¾À¿¡ ¼³Ä¡ÇÑ ¿ÀºêÁ§Æ®¸¦ Pooler ·Î °ü¸®ÇÏ°í ½Í´Ù¸é,
+1. ë¯¸ë¦¬ ì”¬ì— ì„¤ì¹˜í•œ ì˜¤ë¸Œì íŠ¸ë¥¼ Pooler ë¡œ ê´€ë¦¬í•˜ê³  ì‹¶ë‹¤ë©´,
 
-PoolingObjectFromHierarchyRequest(string name) ÇÔ¼ö¸¦ »ç¿ëÇÏ¸é µÈ´Ù.
-( È¤Àº ÀÎ½ºÆåÅÍ¿¡¼­ Pooling From Hierarchy Ç×¸ñ¿¡ ÀÌ¸§À» Ãß°¡ÇÏ¸é µÊ )
+PoolingObjectFromHierarchyRequest(string name) í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•˜ë©´ ëœë‹¤.
+( í˜¹ì€ ì¸ìŠ¤í™í„°ì—ì„œ Pooling From Hierarchy í•­ëª©ì— ì´ë¦„ì„ ì¶”ê°€í•˜ë©´ ë¨ )
 
-Prefab ÀÌ ÀÖ¾î¾ß °ü¸®°¡´ÉÇÏ¸ç, ÀÌ¸§À¸·Î ÀÌ¸¦ ±¸ºĞÇÏ±â ¶§¹®¿¡ ¿ÀºêÁ§Æ®ÀÇ ÀÌ¸§Àº ´ÙÀ½ÀÇ Á¶°ÇÀ» °®Ãç¾ß ÇÑ´Ù.
+Prefab ì´ ìˆì–´ì•¼ ê´€ë¦¬ê°€ëŠ¥í•˜ë©°, ì´ë¦„ìœ¼ë¡œ ì´ë¥¼ êµ¬ë¶„í•˜ê¸° ë•Œë¬¸ì— ì˜¤ë¸Œì íŠ¸ì˜ ì´ë¦„ì€ ë‹¤ìŒì˜ ì¡°ê±´ì„ ê°–ì¶°ì•¼ í•œë‹¤.
 
-( "ÀÎÀÚ·Î µé¾î¿Â string °ú °°Àº ÀÌ¸§" + "(" )&&( ÀÌ¸§ ¾Õ¿¡ ¿©¹éÀÌ ÀÖ¾î¼± ¾ÈµÊ )
-
-
-ÀÌ¿¡ ÀÇÇØ, ¸¸¾à "Monster" ¶ó´Â ÀÌ¸§ÀÇ ¿ÀºêÁ§Æ®¸¦ °ü¸®¿äÃ»ÇÏ´Â °æ¿ì,
-
-¾À¿¡ ÀÖ´Â "Elite Monster" µî ¼ö½Ä¾î°¡ ºÙÀº ¿ÀºêÁ§Æ®µéÀº ¹«½ÃµÇ¸ç,
-
-"Monster (1)" µî º¹Á¦ ±â´É¿¡ ÀÇÇØ °ıÈ£¿Í ¼ıÀÚ°¡ ºÙÀº ¿ÀºêÁ§Æ®µéÀº Æ÷ÇÔµÈ´Ù.
+( "ì¸ìë¡œ ë“¤ì–´ì˜¨ string ê³¼ ê°™ì€ ì´ë¦„" + "(" )&&( ì´ë¦„ ì•ì— ì—¬ë°±ì´ ìˆì–´ì„  ì•ˆë¨ )
 
 
-2. ÀÎ½ºÆåÅÍÀÇ Exlude Log Tags, Names ¸¦ ÅëÇØ ºÒÇÊ¿äÇÑ ·Î±×¸¦ Á¦¿ÜÇÒ ¼ö ÀÖ´Ù.
+ì´ì— ì˜í•´, ë§Œì•½ "Monster" ë¼ëŠ” ì´ë¦„ì˜ ì˜¤ë¸Œì íŠ¸ë¥¼ ê´€ë¦¬ìš”ì²­í•˜ëŠ” ê²½ìš°,
 
-¿¹¸¦µé¾î Particle ÀÌ³ª UI ÅÂ±×°¡ ºÙÀº ¿ÀºêÁ§Æ®´Â ·Î±×¸¦ ¶ç¿ìÁö ¾Ê´Â°Ô ÁÁÀ» °ÍÀÌ´Ù.
+ì”¬ì— ìˆëŠ” "Elite Monster" ë“± ìˆ˜ì‹ì–´ê°€ ë¶™ì€ ì˜¤ë¸Œì íŠ¸ë“¤ì€ ë¬´ì‹œë˜ë©°,
 
-
-3. ¿ÀºêÁ§Æ®¸¦ ¹Ì¸® »ı¼ºÇØµÎ°í ½Í´Ù¸é,
-
-CreateInactiveObjectRequset(string name, int count) ÇÔ¼ö¸¦ »ç¿ëÇÏ¸é µÈ´Ù.
-( È¤Àº ÀÎ½ºÆåÅÍ¿¡¼­ Pre Pooling List Ç×¸ñÀ» »ç¿ëÇÏ¸é µÈ´Ù. )
+"Monster (1)" ë“± ë³µì œ ê¸°ëŠ¥ì— ì˜í•´ ê´„í˜¸ì™€ ìˆ«ìê°€ ë¶™ì€ ì˜¤ë¸Œì íŠ¸ë“¤ì€ í¬í•¨ëœë‹¤.
 
 
-4. ProcessFunctionToObjects(ProcessingFunction func, string name, TargetObject to) ÇÔ¼ö·Î
+2. ì¸ìŠ¤í™í„°ì˜ Exlude Log Tags, Names ë¥¼ í†µí•´ ë¶ˆí•„ìš”í•œ ë¡œê·¸ë¥¼ ì œì™¸í•  ìˆ˜ ìˆë‹¤.
 
-°°Àº ÇÁ¸®ÆÕ¿¡¼­ »ı¼ºµÈ ¿ÀºêÁ§Æ®µé ÀüºÎ¿¡°Ô »ç¿ëÀÚ°¡ Á¤ÀÇÇÑ ¾î¶² ÇÔ¼ö¸¦ ½ÇÇà½ÃÅ³ ¼ö ÀÖ´Ù.
+ì˜ˆë¥¼ë“¤ì–´ Particle ì´ë‚˜ UI íƒœê·¸ê°€ ë¶™ì€ ì˜¤ë¸Œì íŠ¸ëŠ” ë¡œê·¸ë¥¼ ë„ìš°ì§€ ì•ŠëŠ”ê²Œ ì¢‹ì„ ê²ƒì´ë‹¤.
 
-¿¹Á¦)
+
+3. ì˜¤ë¸Œì íŠ¸ë¥¼ ë¯¸ë¦¬ ìƒì„±í•´ë‘ê³  ì‹¶ë‹¤ë©´,
+
+CreateInactiveObjectRequset(string name, int count) í•¨ìˆ˜ë¥¼ ì‚¬ìš©í•˜ë©´ ëœë‹¤.
+( í˜¹ì€ ì¸ìŠ¤í™í„°ì—ì„œ Pre Pooling List í•­ëª©ì„ ì‚¬ìš©í•˜ë©´ ëœë‹¤. )
+
+
+4. ProcessFunctionToObjects(ProcessingFunction func, string name, TargetObject to) í•¨ìˆ˜ë¡œ
+
+ê°™ì€ í”„ë¦¬íŒ¹ì—ì„œ ìƒì„±ëœ ì˜¤ë¸Œì íŠ¸ë“¤ ì „ë¶€ì—ê²Œ ì‚¬ìš©ìê°€ ì •ì˜í•œ ì–´ë–¤ í•¨ìˆ˜ë¥¼ ì‹¤í–‰ì‹œí‚¬ ìˆ˜ ìˆë‹¤.
+
+ì˜ˆì œ)
 
 void PositionReset(GameObject obj)
 {
@@ -82,8 +85,7 @@ void Start ()
     VEasyPoolerManager.ProcessFunctionToObjects(func, "Cube", VEasyPoolerManager.TargetObject.ACTIVE_ONLY);
 }
 
-ÀÌ·¸°Ô »ç¿ëÇÏ¸é, "Cube" ÇÁ¸®ÆÕ¿¡¼­ º¹Á¦µÈ °ü¸®ÁßÀÎ ¿ÀºêÁ§Æ®µé Áß active »óÅÂÀÎ °Íµé °¢°¢¿¡ ´ëÇØ,
+ì´ë ‡ê²Œ ì‚¬ìš©í•˜ë©´, "Cube" í”„ë¦¬íŒ¹ì—ì„œ ë³µì œëœ ê´€ë¦¬ì¤‘ì¸ ì˜¤ë¸Œì íŠ¸ë“¤ ì¤‘ active ìƒíƒœì¸ ê²ƒë“¤ ê°ê°ì— ëŒ€í•´,
 
-PositionReset ÇÔ¼ö°¡ ½ÇÇàµÇ¾î À§Ä¡°¡ ÃÊ±âÈ­µÈ´Ù.
-
+PositionReset í•¨ìˆ˜ê°€ ì‹¤í–‰ë˜ì–´ ìœ„ì¹˜ê°€ ì´ˆê¸°í™”ëœë‹¤.
 
