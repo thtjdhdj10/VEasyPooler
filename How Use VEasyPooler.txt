@@ -1,13 +1,12 @@
 - 기본 기능 사용법 -
 
 
-0. Awake 에서 해주는 초기화가 늦어서 꼬이는 경우가 있을 수 있음.
+1. Awake 에서 해주는 초기화가 늦어서 꼬이는 경우가 있을 수 있음.
 Edit->Project Settings->Script Execution Order 에서 VEasyPoolerManager 스크립트를 제일 위에 두면 안전하다.
 
-1. 아무 오브젝트에 VEasyPoolerManager 를 추가한다
 
-
-2. Inspector 에서 Include Prefab Path 에 Prefab 이 들어있는 폴더 이름을 추가한다
+2. 아무 오브젝트에 VEasyPoolerManager 를 추가한다.
+Inspector 에서 Include Prefab Path 에 Prefab 이 들어있는 폴더 이름을 추가한다
 Resources 폴더는 자동으로 추가되며, Resources 의 하위 폴더만 추가할 수 있다.
 
 
