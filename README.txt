@@ -1,0 +1,89 @@
+- 기본 기능 사용법 -
+
+
+1. Awake 에서 해주는 초기화가 늦어서 꼬이는 경우가 있을 수 있음.
+Edit->Project Settings->Script Execution Order 에서 VEasyPoolerManager 스크립트를 제일 위에 두면 안전하다.
+
+
+2. 아무 오브젝트에 VEasyPoolerManager 를 추가한다.
+Inspector 에서 Include Prefab Path 에 Prefab 이 들어있는 폴더 이름을 추가한다
+Resources 폴더는 자동으로 추가되며, Resources 의 하위 폴더만 추가할 수 있다.
+
+
+3.
+GameObject stone = VEayPoolerManager.GetObjectRequest("Cube");
+이렇게 쓰면 된다.
+
+GetObjectRequest 는 오버로딩 되어있다.
+오브젝트의 갯수와 active 여부를 추가로 선택할 수 있다.
+
+List<GameObject> stones = VEayPoolerManager.GetObjectRequest("Cube", 10, true);
+
+
+4.
+VEayPoolerManager.ReleaseObjectRequest(stones);
+release 할 때는 오브젝트만 넘겨주면 된다. 리스트여도 되고 아니여도 되고
+
+
+5.
+GameObject fire VEayPoolerManager.GetFiniteObjectRequest("Sphere", lifeTime);
+
+finite object request 로 특정한 lifeTime 이 지나면 자동으로 release 되는 오브젝트를 가져올 수 있다.
+
+당연히 오버로딩 되어있다.
+
+List<GameObject> fires VEayPoolerManager.GetFiniteObjectRequest("Sphere", 3, true, lifeTime);
+
+
+
+- 추가 기능 사용법 -
+
+
+1. 미리 씬에 설치한 오브젝트를 Pooler 로 관리하고 싶다면,
+
+PoolingObjectFromHierarchyRequest(string name) 함수를 사용하면 된다.
+( 혹은 인스펙터에서 Pooling From Hierarchy 항목에 이름을 추가하면 됨 )
+
+Prefab 이 있어야 관리가능하며, 이름으로 이를 구분하기 때문에 오브젝트의 이름은 다음의 조건을 갖춰야 한다.
+
+( "인자로 들어온 string 과 같은 이름" + "(" )&&( 이름 앞에 여백이 있어선 안됨 )
+
+
+이에 의해, 만약 "Monster" 라는 이름의 오브젝트를 관리요청하는 경우,
+
+씬에 있는 "Elite Monster" 등 수식어가 붙은 오브젝트들은 무시되며,
+
+"Monster (1)" 등 복제 기능에 의해 괄호와 숫자가 붙은 오브젝트들은 포함된다.
+
+
+2. 인스펙터의 Exlude Log Tags, Names 를 통해 불필요한 로그를 제외할 수 있다.
+
+예를들어 Particle 이나 UI 태그가 붙은 오브젝트는 로그를 띄우지 않는게 좋을 것이다.
+
+
+3. 오브젝트를 미리 생성해두고 싶다면,
+
+CreateInactiveObjectRequset(string name, int count) 함수를 사용하면 된다.
+( 혹은 인스펙터에서 Pre Pooling List 항목을 사용하면 된다. )
+
+
+4. ProcessFunctionToObjects(ProcessingFunction func, string name, TargetObject to) 함수로
+
+같은 프리팹에서 생성된 오브젝트들 전부에게 사용자가 정의한 어떤 함수를 실행시킬 수 있다.
+
+예제)
+
+void PositionReset(GameObject obj)
+{
+    obj.transform.position = new Vector3();
+}
+
+void Start ()
+{
+    VEasyPoolerManager.ProcessingFunction func = PositionReset;
+    VEasyPoolerManager.ProcessFunctionToObjects(func, "Cube", VEasyPoolerManager.TargetObject.ACTIVE_ONLY);
+}
+
+이렇게 사용하면, "Cube" 프리팹에서 복제된 관리중인 오브젝트들 중 active 상태인 것들 각각에 대해,
+
+PositionReset 함수가 실행되어 위치가 초기화된다.
