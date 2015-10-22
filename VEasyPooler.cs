@@ -1,7 +1,4 @@
 ﻿using UnityEngine;
-using UnityEditor;
-using System.Collections;
-using System.Diagnostics;
 using System.Collections.Generic;
 
 using Debug = UnityEngine.Debug;
@@ -30,6 +27,11 @@ public class VEasyPooler : MonoBehaviour
             return;
 
         Debug.Log(str);
+    }
+
+    public GameObject GetModelObject()
+    {
+        return modelObject;
     }
 
     public void SetModelObject(string name)
@@ -72,11 +74,9 @@ public class VEasyPooler : MonoBehaviour
         originTag = modelObject.tag;
 
         ObjectState modelState = modelObject.AddComponent<ObjectState>();
-
-        modelState.IsFinite = false;
-        modelState.indexOfPool = -1;
+        
         modelState.IsUse = false;
-        modelState.OriginalName = originName;
+        modelState.originalName = originName;
 
         modelObject.name = originName + "(Origin)";
         modelObject.transform.parent = gameObject.transform;
@@ -94,10 +94,9 @@ public class VEasyPooler : MonoBehaviour
             if (state == null)
             {
                 state = list[i].AddComponent<ObjectState>();
-                state.IsFinite = false;
                 state.IsUse = true;
                 state.indexOfPool = inActiveCount + i;
-                state.OriginalName = originName;
+                state.originalName = originName;
             }
 
             list[i].name = originName + "_" + objectNumber++;
@@ -138,10 +137,9 @@ public class VEasyPooler : MonoBehaviour
 
 
             ObjectState state = obj.GetComponent<ObjectState>();
-            state.IsFinite = false;
             state.IsUse = false;
             state.indexOfPool = inActiveCount + i;
-            state.OriginalName = originName;
+            state.originalName = originName;
 
             obj.name = originName + "_" + objectNumber++;
             if (VEasyPoolerManager.manager.visualizeObjectList == true)
@@ -171,10 +169,9 @@ public class VEasyPooler : MonoBehaviour
 
 
             ObjectState state = obj.GetComponent<ObjectState>();
-            state.IsFinite = false;
             state.IsUse = active;
             state.indexOfPool = objectList.Count;
-            state.OriginalName = originName;
+            state.originalName = originName;
 
             obj.name = originName + "_" + objectNumber++;
             if (VEasyPoolerManager.manager.visualizeObjectList == true)
@@ -192,10 +189,18 @@ public class VEasyPooler : MonoBehaviour
 
     public List<GameObject> GetObjectRequest(int count, bool active)
     {
+        return GetObjectRequest(count, active,
+            modelObject.transform.position,
+            modelObject.transform.eulerAngles,
+            modelObject.transform.localScale);
+    }
+
+    public List<GameObject> GetObjectRequest(int count, bool active, Vector3 pos, Vector3 rot, Vector3 scale)
+    {
         ExactlyLog("get " + originName + " * " + count);
 
         int needCount = count - inActiveCount;
-        
+
         if (needCount > 0)
         {
             List<GameObject> retObjects = CreateActiveObjectRequset(needCount, active);
@@ -207,7 +212,7 @@ public class VEasyPooler : MonoBehaviour
             {
                 int startIdx = inActiveCount - countMinusNeed;
 
-                List<GameObject> addList = GetObjectList(startIdx, countMinusNeed, active);
+                List<GameObject> addList = GetObjectList(startIdx, countMinusNeed, active, pos, rot, scale);
 
                 retObjects.AddRange(addList);
             }
@@ -218,11 +223,11 @@ public class VEasyPooler : MonoBehaviour
         {
             int getIndex = inActiveCount - count;
 
-            return GetObjectList(getIndex, count, active);
+            return GetObjectList(getIndex, count, active, pos, rot, scale);
         }
     }
 
-    private List<GameObject> GetObjectList(int startIdx, int count, bool active)
+    private List<GameObject> GetObjectList(int startIdx, int count, bool active, Vector3 pos, Vector3 rot, Vector3 scale)
     {
         inActiveCount -= count;
         activeCount += count;
@@ -230,7 +235,6 @@ public class VEasyPooler : MonoBehaviour
         for (int i = startIdx; i < startIdx + count; ++i)
         {
             ObjectState state = objectList[i].GetComponent<ObjectState>();
-            state.IsFinite = false;
             state.IsUse = active;
         }
 
@@ -238,9 +242,9 @@ public class VEasyPooler : MonoBehaviour
         {
             for (int i = startIdx; i < startIdx + count; ++i)
             {
-                objectList[i].transform.position = modelObject.transform.position;
-                objectList[i].transform.rotation = modelObject.transform.rotation;
-                objectList[i].transform.localScale = modelObject.transform.localScale;
+                objectList[i].transform.position = pos;
+                objectList[i].transform.eulerAngles = rot;
+                objectList[i].transform.localScale = scale;
             }
         }
 
@@ -258,13 +262,20 @@ public class VEasyPooler : MonoBehaviour
 
     public List<GameObject> GetFiniteObjectRequest(int count, bool active, float lifeTime)
     {
-        List<GameObject> list = GetObjectRequest(count, active);
+        return GetFiniteObjectRequest(count, active, lifeTime,
+            modelObject.transform.position,
+            modelObject.transform.eulerAngles,
+            modelObject.transform.localScale);
+    }
+
+    public List<GameObject> GetFiniteObjectRequest(int count, bool active, float lifeTime, Vector3 pos, Vector3 rot, Vector3 scale)
+    {
+        List<GameObject> list = GetObjectRequest(count, active, pos, rot, scale);
 
         for(int i = 0; i < count; ++i)
         {
             ObjectState state = list[i].GetComponent<ObjectState>();
-            state.IsFinite = true;
-            state.LifeTime = lifeTime;
+            state.SetReleaseTimer(lifeTime);
         }
 
         return list;
@@ -295,8 +306,7 @@ public class VEasyPooler : MonoBehaviour
                 Debug.LogWarning("\"" + obj[i].name + "\" have not ObjectState script");
                 continue;
             }
-
-            releaseObjState.IsFinite = false;
+            
             releaseObjState.IsUse = false;
 
             int relIdx = releaseObjState.indexOfPool;

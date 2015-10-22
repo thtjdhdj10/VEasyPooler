@@ -44,8 +44,6 @@ public class VEasyPoolerManager : MonoBehaviour
 
         manager = this;
 
-        includePrefabPath.Add("");
-
         for (int i = 0; i < poolingFromHierarchy.Count; ++i)
         {
             PoolingObjectFromHierarchyRequest(poolingFromHierarchy[i]);
@@ -131,27 +129,6 @@ public class VEasyPoolerManager : MonoBehaviour
 
     // get
 
-    public static GameObject GetObjectRequest(string name)
-    {
-        List<GameObject> list = GetObjectRequest(name, 1);
-
-        if (list == null) return null;
-        return list[0];
-    }
-
-    public static List<GameObject> GetObjectRequest(string name, int count)
-    {
-        return GetObjectRequest(name, count, true);
-    }
-
-    public static List<GameObject> GetObjectRequest(string name, int count, bool active)
-    {
-        if (IsValidArgs(name, count) == false)
-            return null;
-
-        return poolDic[name].GetObjectRequest(count, active);
-    }
-
     public static int GetObjectCountRequest(string name, bool active)
     {
         if (IsValidArgs(name) == false)
@@ -160,27 +137,122 @@ public class VEasyPoolerManager : MonoBehaviour
         return poolDic[name].GetObjectCountRequest(active);
     }
 
-    // get finite
-
-    public static GameObject GetFiniteObjectRequest(string name, float lifeTime)
+    public static GameObject GetObjectRequest(string name)
     {
-        List<GameObject> list = GetFiniteObjectRequest(name, 1, lifeTime);
+        List<GameObject> list = GetObjectListRequest(name, 1);
 
         if (list == null) return null;
         return list[0];
     }
 
-    public static List<GameObject> GetFiniteObjectRequest(string name, int count, float lifeTime)
+    public static GameObject GetObjectRequest(string name, bool active)
     {
-        return GetFiniteObjectRequest(name, count, true, lifeTime);
+        List<GameObject> list = GetObjectListRequest(name, 1, active);
+
+        if (list == null) return null;
+        return list[0];
     }
 
-    public static List<GameObject> GetFiniteObjectRequest(string name, int count, bool active, float lifeTime)
+    // get list
+
+    public static List<GameObject> GetObjectListRequest(string name, int count)
+    {
+        return GetObjectListRequest(name, count, true);
+    }
+
+    public static List<GameObject> GetObjectListRequest(string name, int count, bool active)
+    {
+        if (IsValidArgs(name, count) == false)
+            return null;
+
+        return poolDic[name].GetObjectRequest(count, active);
+    }
+
+    // get finite
+
+    public static GameObject GetFiniteObjectRequest(string name, float lifeTime)
+    {
+        List<GameObject> list = GetFiniteObjectListRequest(name, 1, true, lifeTime);
+
+        if (list == null) return null;
+        return list[0];
+    }
+
+    public static GameObject GetFiniteObjectRequest(string name, bool active, float lifeTime)
+    {
+        List<GameObject> list = GetFiniteObjectListRequest(name, 1, active, lifeTime);
+
+        if (list == null) return null;
+        return list[0];
+    }
+
+    public static List<GameObject> GetFiniteObjectListRequest(string name, int count, float lifeTime)
+    {
+        return GetFiniteObjectListRequest(name, count, true, lifeTime);
+    }
+
+    public static List<GameObject> GetFiniteObjectListRequest(string name, int count, bool active, float lifeTime)
     {
         if (IsValidArgs(name, count, lifeTime) == false)
             return null;
 
         return poolDic[name].GetFiniteObjectRequest(count, active, lifeTime);
+    }
+
+    // get modified
+
+    public static GameObject GetModifiedObjectRequest(string name, Vector3 pos)
+    {
+        Vector3 rot = new Vector3();
+        Vector3 scale = new Vector3();
+
+        GameObject model = poolDic[name].GetModelObject();
+        if (model != null)
+        {
+            rot = model.transform.eulerAngles;
+            scale = model.transform.localScale;
+        }
+
+        return GetModifiedObjectRequest(name, pos, rot, scale);
+    }
+
+    public static GameObject GetModifiedObjectRequest(string name, Vector3 pos, Vector3 rot, Vector3 scale)
+    {
+        if (IsValidArgs(name) == false)
+            return null;
+
+        List<GameObject> list = poolDic[name].GetObjectRequest(1, true, pos, rot, scale);
+
+        if (list == null) return null;
+        return list[0];
+    }
+
+    // get modified finite
+
+    public static GameObject GetModifiedFiniteObjectRequest(string name, float lifeTime, Vector3 pos )
+    {
+        Vector3 rot = new Vector3();
+        Vector3 scale = new Vector3();
+
+        GameObject model = poolDic[name].GetModelObject();
+        if(model != null)
+        {
+            rot = model.transform.eulerAngles;
+            scale = model.transform.localScale;
+        }
+
+        return GetModifiedFiniteObjectRequest(name, lifeTime, pos, rot, scale);
+    }
+
+    public static GameObject GetModifiedFiniteObjectRequest(string name, float lifeTime, Vector3 pos, Vector3 rot, Vector3 scale)
+    {
+        if (IsValidArgs(name, lifeTime) == false)
+            return null;
+
+        List<GameObject> list = poolDic[name].GetFiniteObjectRequest(1, true, lifeTime, pos, rot, scale);
+
+        if (list == null) return null;
+        return list[0];
     }
 
     // release
@@ -217,7 +289,7 @@ public class VEasyPoolerManager : MonoBehaviour
             return;
         }
         
-        string name = state.OriginalName;
+        string name = state.originalName;
         if(IsValidArgs(name) == false)
         {
             Debug.LogWarning("release request fail");

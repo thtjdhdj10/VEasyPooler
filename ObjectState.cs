@@ -1,64 +1,71 @@
 ﻿using UnityEngine;
 using System.Collections;
 
-public class ObjectState : MonoBehaviour {
+public class ObjectState : MonoBehaviour
+{
 
-    [SerializeField]
-    private bool isFinite;
-    public bool IsFinite
+    bool isDying = false;
+    float lifeTime = 0.0f;
+
+    public void SetReleaseTimer(float time)
     {
-        get
+        isDying = true;
+        lifeTime = time;
+    }
+
+    public void AddReleaseTimer(float time)
+    {
+        lifeTime += time;
+    }
+
+    public void StopReleaseTimer()
+    {
+        isDying = false;
+    }
+
+    public void StartReleaseTimer()
+    {
+        isDying = true;
+    }
+
+    public float GetReleaseTime()
+    {
+        return lifeTime;
+    }
+
+    //
+
+    //bool isMoving = false;
+    //bool useLookAtDirection = false;
+
+    //float speedDotPerFrame = 0.0f;
+
+    //Vector3 direction = new Vector3();
+    //Vector3 toPosition = new Vector3();
+
+    //
+
+    void Update()
+    {
+        if (isDying == true)
         {
-            return IsFinite;
-        }
-        set
-        {
-            isFinite = value;
-            if (value == false)
-                lifeTime = -0.0f;
+            if (lifeTime > 0.0f)
+            {
+                lifeTime -= Time.deltaTime;
+            }
+            else
+            {
+                VEasyPoolerManager.ReleaseObjectRequest(gameObject);
+            }
         }
     }
 
-    [SerializeField]
-    private float lifeTime;
-    public float LifeTime
-    {
-        get
-        {
-            return lifeTime;
-        }
-        set
-        {
-            lifeTime = value;
-            StopCoroutine("SelfReleaseTimer");
-            StartCoroutine("SelfReleaseTimer");
-        }
-    }
-
-    IEnumerator SelfReleaseTimer()
-    {
-        yield return new WaitForSeconds(lifeTime);
-
-        if (isFinite == true)
-            ObjectPoolManager.ReleaseObjectRequest(gameObject);
-    }
+    //
 
     [System.NonSerialized]
-    public int indexOfPool;
+    public int indexOfPool = -1;
     
-    private string originalName = null;
-    public string OriginalName
-    {
-        get
-        {
-            return originalName;
-        }
-        set
-        {
-            if (originalName == null)
-                originalName = value;
-        }
-    }
+    public string originalName = null;
 
     private bool isUse;
     public bool IsUse
@@ -69,10 +76,7 @@ public class ObjectState : MonoBehaviour {
         }
         set
         {
-            if (value == true)
-                gameObject.SetActive(true);
-            else
-                gameObject.SetActive(false);
+            gameObject.SetActive(value);
 
             isUse = value;
         }
