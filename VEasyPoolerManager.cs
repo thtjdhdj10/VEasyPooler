@@ -139,17 +139,24 @@ public class VEasyPoolerManager : MonoBehaviour
         return poolDic[name].GetObjectCountRequest(active);
     }
 
-    public static List<GameObject> RefObjectListAtLayer(LayerManager.LayerNumber number)
+    //
+
+    public static List<GameObject> RefObjectListAtLayer(int layerMask)
     {
         List<GameObject> retList = new List<GameObject>();
 
-        var keyColl = poolDic.Keys;
-
-        foreach (string s in keyColl)
+        foreach (var key in poolDic.Keys)
         {
-            if((LayerManager.LayerNumber)poolDic[s].GetModelObject().layer == number)
+            GameObject obj = poolDic[key].GetModelObject();
+            var layerSetting = obj.GetComponent<LayerSetting>();
+            if (layerSetting == null)
+                continue;
+
+            Debug.Log(obj.name + " " + layerMask + " " + layerSetting.layerMask);
+
+            if (System.Convert.ToBoolean(layerSetting.layerMask & layerMask) == true)
             {
-                retList.AddRange(poolDic[s].objectList);
+                retList.AddRange(poolDic[key].objectList);
             }
         }
 
